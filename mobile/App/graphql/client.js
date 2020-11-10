@@ -1,6 +1,6 @@
 import ApolloClient from "apollo-boost";
+import { LOCALHOST } from "@env";
 
 export const client = new ApolloClient({
-  //If android, put your ip address and not localhost
-  uri: `http://localhost:4000`,
+  uri: `http://${LOCALHOST}:4000`,
 });
