@@ -9,6 +9,7 @@ const resolvers = {
 
   Query: {
     example: () => ({ _id: "1", text: "this is an exmaple" }),
+
     feed: () => {
       return db
         .get("feed")
@@ -17,6 +18,17 @@ const resolvers = {
         )
         .orderBy("publishedAt", "desc")
         .value();
+    },
+
+    responses: (parent, args) => {
+      const originalStatus = db.get("feed").find({ _id: args._id }).value();
+
+      const responses = db
+        .get("feed")
+        .filter({ parentStatusId: args._id })
+        .orderBy("publishedAt", "desc");
+
+      return [originalStatus, ...responses];
     },
   },
 };
