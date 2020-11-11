@@ -1,24 +1,33 @@
-import React from 'react';
-import { FlatList, View } from 'react-native';
+import React from "react";
+import { FlatList, View } from "react-native";
+import { useQuery } from "@apollo/react-hooks";
 
-import { Status, Separator } from '../components/Status';
-import { Button } from '../components/Button';
+import { Status, Separator } from "../components/Status";
+import { Button } from "../components/Button";
+import { requestResponses } from "../graphql/queries";
 
 const Thread = ({ navigation }) => {
-  const originalStatus = navigation.getParam('status', {});
+  const originalStatus = navigation.getParam("status", {});
+  const { loading, data, error } = useQuery(requestResponses, {
+    variables: { _id: originalStatus._id },
+  });
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <FlatList
-      data={[]}
+      data={data.responses}
       renderItem={({ item }) => (
         <Status
           {...item}
-          onHeartPress={() => alert('todo!')}
+          onHeartPress={() => alert("todo!")}
           indent={item._id !== originalStatus._id}
         />
       )}
       ItemSeparatorComponent={() => <Separator />}
-      keyExtractor={item => item._id}
+      keyExtractor={(item) => item._id}
       ListFooterComponent={
         <View
           style={{
@@ -31,7 +40,7 @@ const Thread = ({ navigation }) => {
           <Button
             text="New Reply"
             onPress={() =>
-              navigation.navigate('NewStatus', { parent: originalStatus })
+              navigation.navigate("NewStatus", { parent: originalStatus })
             }
           />
         </View>
