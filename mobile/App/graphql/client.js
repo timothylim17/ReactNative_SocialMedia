@@ -3,4 +3,11 @@ import { LOCALHOST } from "@env";
 
 export const client = new ApolloClient({
   uri: `http://${LOCALHOST}:4000`,
+  request: (operation) => {
+    operation.setContext({
+      headers: {
+        authorization: "Bearer 123",
+      },
+    });
+  },
 });
